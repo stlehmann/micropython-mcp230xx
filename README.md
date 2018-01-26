@@ -37,9 +37,11 @@ A handy visual reference is this from mathworks, although I recommend that for E
 For example, the following will set the output values of pins 10-15 and read the logic value (True or False) of pins 0-9
 
 ```python
+from machine import I2C, Pin
 import mcp
 
-io = mcp.MCP23017()
+i2c = I2C(scl=Pin(5), sda=Pin(6))
+io = mcp.MCP23017(i2c, address=0x20)
 
 # controls some output pins
 outPins = list(range(10,16))
@@ -55,4 +57,18 @@ for pinNum in inPins:
     io.setup(pinNum, mcp.IN)
 while True:
     print(io.input_pins(inPins))
+```
+
+The pyboard uses the `pyb` module instead of the `machine` module for I2C
+access. So the first lines of the example are different for the pyboard:
+
+```python
+from pyb import I2C
+import mcp
+
+i2c = I2C(1, I2C.MASTER)  # Use I2C bus one which is X9 and X10
+io = mcp.MCP23017(i2c, address=0x20)
+
+# ...
+
 ```
